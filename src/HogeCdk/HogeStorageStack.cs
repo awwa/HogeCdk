@@ -1,4 +1,5 @@
 using Amazon.CDK;
+using Amazon.CDK.AWS.DynamoDB;
 using Amazon.CDK.AWS.EC2;
 using Amazon.CDK.AWS.RDS;
 using Amazon.CDK.AWS.S3;
@@ -35,7 +36,7 @@ namespace HogeCdk
             new DatabaseInstance(this, "rds", new DatabaseInstanceProps
             {
                 Engine = DatabaseInstanceEngine.POSTGRES,
-                InstanceType = InstanceType.Of(InstanceClass.BURSTABLE2, InstanceSize.MICRO),
+                // InstanceType = InstanceType.Of(InstanceClass.BURSTABLE2, InstanceSize.SMALL),
                 AllocatedStorage = 8,
                 StorageType = StorageType.STANDARD,
                 Vpc = p.Vpc,
@@ -46,6 +47,17 @@ namespace HogeCdk
                 MultiAz = false,
                 // MasterUsername = "hoge",
                 // MasterUserPassword = SecretValue.PlainText("hoge"),
+                RemovalPolicy = RemovalPolicy.DESTROY,  // DESTROYは開発中のみ使用すること
+            });
+
+            // DynamoDB
+            new Table(this, "dynamo-db", new TableProps
+            {
+                PartitionKey = new Attribute
+                {
+                    Name = "id",
+                    Type = AttributeType.STRING,
+                },
                 RemovalPolicy = RemovalPolicy.DESTROY,  // DESTROYは開発中のみ使用すること
             });
         }
