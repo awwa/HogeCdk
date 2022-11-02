@@ -32,12 +32,47 @@ namespace HogeCdk
                     {
                         Name = "private",
                         CidrMask = 24,
-                        SubnetType = SubnetType.PRIVATE_WITH_EGRESS,
+                        SubnetType = SubnetType.PRIVATE_ISOLATED,
                     }
                 },
                 MaxAzs = 2
             };
             var vpc = new Vpc(this, "vpc", vpcProps);
+
+            // VPC Endpoint
+            new InterfaceVpcEndpoint(this, "vpc-endpoint-ssm", new InterfaceVpcEndpointProps
+            {
+                Vpc = vpc,
+                Service = InterfaceVpcEndpointAwsService.SSM,
+                Subnets = new SubnetSelection
+                {
+                    SubnetType = SubnetType.PUBLIC,
+                },
+                PrivateDnsEnabled = true
+            });
+
+            // VPC Endpoint
+            new InterfaceVpcEndpoint(this, "vpc-endpoint-ssm-message", new InterfaceVpcEndpointProps
+            {
+                Vpc = vpc,
+                Service = InterfaceVpcEndpointAwsService.SSM_MESSAGES,
+                Subnets = new SubnetSelection
+                {
+                    SubnetType = SubnetType.PUBLIC,
+                },
+                PrivateDnsEnabled = true,
+            });
+
+            // VPC Endpoint
+            new GatewayVpcEndpoint(this, "vpc-endpoint-s3", new GatewayVpcEndpointProps
+            {
+                Vpc = vpc,
+                Service = GatewayVpcEndpointAwsService.S3,
+                // Subnets = new SubnetSelection
+                // {
+                //     SubnetType = SubnetType.PUBLIC,
+                // },
+            });
 
             // Expose properties
             Vpc = vpc;

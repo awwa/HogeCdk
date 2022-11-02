@@ -33,22 +33,46 @@ namespace HogeCdk
             });
 
             // RDS
-            new DatabaseInstance(this, "rds", new DatabaseInstanceProps
+            // new DatabaseInstance(this, "rds", new DatabaseInstanceProps
+            // {
+            //     Engine = DatabaseInstanceEngine.POSTGRES,
+            //     // InstanceType = InstanceType.Of(InstanceClass.BURSTABLE2, InstanceSize.SMALL),
+            //     AllocatedStorage = 8,
+            //     StorageType = StorageType.STANDARD,
+            //     Vpc = p.Vpc,
+            //     VpcSubnets = new SubnetSelection
+            //     {
+            //         SubnetType = SubnetType.PRIVATE_ISOLATED,
+            //     },
+            //     MultiAz = false,
+            //     // MasterUsername = "hoge",
+            //     // MasterUserPassword = SecretValue.PlainText("hoge"),
+            //     RemovalPolicy = RemovalPolicy.DESTROY,  // DESTROYは開発中のみ使用すること
+            // });
+
+            // Aurora Serverless
+            new ServerlessCluster(this, "aurora-serverless", new ServerlessClusterProps
             {
-                Engine = DatabaseInstanceEngine.POSTGRES,
-                // InstanceType = InstanceType.Of(InstanceClass.BURSTABLE2, InstanceSize.SMALL),
-                AllocatedStorage = 8,
-                StorageType = StorageType.STANDARD,
+                Engine = DatabaseClusterEngine.AURORA_POSTGRESQL,
                 Vpc = p.Vpc,
+                Credentials = Credentials.FromGeneratedSecret("hoge"),
+                ClusterIdentifier = "db-endpoint-test",
+                DefaultDatabaseName = "hoge",
+                ParameterGroup = ParameterGroup.FromParameterGroupName(this, "aurora-serverless-param-group", "default.aurora-postgresql10"),
                 VpcSubnets = new SubnetSelection
                 {
-                    SubnetType = SubnetType.PRIVATE_WITH_EGRESS,
+                    SubnetType = SubnetType.PRIVATE_ISOLATED,
                 },
-                MultiAz = false,
-                // MasterUsername = "hoge",
-                // MasterUserPassword = SecretValue.PlainText("hoge"),
                 RemovalPolicy = RemovalPolicy.DESTROY,  // DESTROYは開発中のみ使用すること
+                Scaling = new ServerlessScalingOptions
+                {
+                    AutoPause = Duration.Minutes(5),
+                    MinCapacity = AuroraCapacityUnit.ACU_2,
+                    MaxCapacity = AuroraCapacityUnit.ACU_2,
+                },
+                EnableDataApi = false,
             });
+
 
             // DynamoDB
             new Table(this, "dynamo-db", new TableProps

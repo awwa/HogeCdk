@@ -10,6 +10,7 @@ namespace HogeCdk
             var app = new App();
             //new HogeCdkStack(app, "HogeCdkStack");
             var network = new HogeNetworkStack(app, "HogeNetworkStack");
+            var network2 = new HogeNetworkStack(app, "HogeNetworkStack2");
 
             new HogeComputeStack(app, "HogeComputeStack", new HogeComputeStackProps
             {
