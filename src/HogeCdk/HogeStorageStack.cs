@@ -50,29 +50,29 @@ namespace HogeCdk
             //     RemovalPolicy = RemovalPolicy.DESTROY,  // DESTROYは開発中のみ使用すること
             // });
 
-            // Aurora Serverless
-            new ServerlessCluster(this, "aurora-serverless", new ServerlessClusterProps
-            {
-                Engine = DatabaseClusterEngine.AURORA_POSTGRESQL,
-                Vpc = p.Vpc,
-                Credentials = Credentials.FromGeneratedSecret("hoge"),
-                ClusterIdentifier = "db-endpoint-test",
-                DefaultDatabaseName = "hoge",
-                ParameterGroup = ParameterGroup.FromParameterGroupName(this, "aurora-serverless-param-group", "default.aurora-postgresql10"),
-                VpcSubnets = new SubnetSelection
-                {
-                    SubnetType = SubnetType.PRIVATE_ISOLATED,
-                },
-                RemovalPolicy = RemovalPolicy.DESTROY,  // DESTROYは開発中のみ使用すること
-                Scaling = new ServerlessScalingOptions
-                {
-                    AutoPause = Duration.Minutes(5),
-                    MinCapacity = AuroraCapacityUnit.ACU_2,
-                    MaxCapacity = AuroraCapacityUnit.ACU_2,
-                },
-                EnableDataApi = false,
-            });
-
+            // Aurora Serverless(Compute側に移動)
+            // var rds = new ServerlessCluster(this, "aurora-serverless", new ServerlessClusterProps
+            // {
+            //     Engine = DatabaseClusterEngine.AURORA_POSTGRESQL,
+            //     Vpc = p.Vpc,
+            //     Credentials = Credentials.FromGeneratedSecret("postgres"),
+            //     ClusterIdentifier = "db-endpoint-test",
+            //     DefaultDatabaseName = "hoge",
+            //     ParameterGroup = ParameterGroup.FromParameterGroupName(this, "aurora-serverless-param-group", "default.aurora-postgresql14"),
+            //     VpcSubnets = new SubnetSelection
+            //     {
+            //         SubnetType = SubnetType.PRIVATE_ISOLATED,
+            //     },
+            //     RemovalPolicy = RemovalPolicy.DESTROY,  // DESTROYは開発中のみ使用すること
+            //     Scaling = new ServerlessScalingOptions
+            //     {
+            //         AutoPause = Duration.Minutes(5),
+            //         MinCapacity = AuroraCapacityUnit.ACU_2,
+            //         MaxCapacity = AuroraCapacityUnit.ACU_2,
+            //     },
+            //     EnableDataApi = false,
+            // });
+            // rds.Connections.AllowFrom().AllowDefaultPortFrom().AllowDefaultPortInternally();
 
             // DynamoDB
             new Table(this, "dynamo-db", new TableProps

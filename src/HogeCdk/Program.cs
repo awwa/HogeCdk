@@ -10,17 +10,17 @@ namespace HogeCdk
             var app = new App();
             //new HogeCdkStack(app, "HogeCdkStack");
             var network = new HogeNetworkStack(app, "HogeNetworkStack");
-            var network2 = new HogeNetworkStack(app, "HogeNetworkStack2");
+            // var network2 = new HogeNetworkStack(app, "HogeNetworkStack2");
 
             new HogeComputeStack(app, "HogeComputeStack", new HogeComputeStackProps
             {
                 Vpc = network.Vpc,
             });
 
-            new HogeStorageStack(app, "HogeStorageStack", new HogeStorageStackProps
-            {
-                Vpc = network.Vpc,
-            });
+            // new HogeStorageStack(app, "HogeStorageStack", new HogeStorageStackProps
+            // {
+            //     Vpc = network.Vpc,
+            // });
 
             app.Synth();
         }
